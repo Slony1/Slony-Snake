@@ -665,9 +665,9 @@ const SnakeGame: React.FC = () => {
       if (containerRef.current && canvasRef.current) {
         const boardContainer = canvasRef.current.parentElement;
         if (boardContainer) {
-          // Increase margins slightly more for mobile (clientHeight/Width - 32 instead of - 8) to prevent crowding
+          // Increase margins more aggressively for mobile to ensure footer visibility
           const isMobile = window.innerWidth < 768;
-          const margin = isMobile ? 32 : 16;
+          const margin = isMobile ? 48 : 24; 
           const size = Math.max(100, Math.min(boardContainer.clientWidth - margin, boardContainer.clientHeight - margin, 1000));
           canvasRef.current.width = size;
           canvasRef.current.height = size;
@@ -758,8 +758,8 @@ const SnakeGame: React.FC = () => {
         </aside>
 
         {/* Game Area */}
-        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-1 md:m-0">
-          <div className="relative p-2 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-1 md:m-0 overflow-hidden">
+          <div className="relative p-1 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
             <canvas 
               ref={canvasRef} 
               className="bg-black shadow-[0_0_50px_rgba(163,230,28,0.25)] border-2 md:border-8 border-indigo-950"
