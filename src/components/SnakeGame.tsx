@@ -667,8 +667,9 @@ const SnakeGame: React.FC = () => {
         if (boardContainer) {
           // Increase margins more aggressively for mobile to ensure footer visibility
           const isMobile = window.innerWidth < 768;
-          const margin = isMobile ? 100 : 48; 
-          const size = Math.max(100, Math.min(boardContainer.clientWidth - margin, boardContainer.clientHeight - margin, 900));
+          const margX = isMobile ? 32 : 48;
+          const margY = isMobile ? window.innerHeight * 0.4 : 80; 
+          const size = Math.max(80, Math.min(boardContainer.clientWidth - margX, boardContainer.clientHeight - margY, isMobile ? 220 : 900));
           canvasRef.current.width = size;
           canvasRef.current.height = size;
         }
@@ -682,14 +683,14 @@ const SnakeGame: React.FC = () => {
   return (
     <div className="flex flex-col h-screen h-[100svh] h-[100dvh] bg-black text-lime-400 font-mono crt-line overflow-hidden" ref={containerRef}>
       {/* Arcade Header */}
-      <header className="w-full shrink-0 py-1 md:py-2 px-2 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+      <header className="w-full shrink-0 py-0.5 md:py-2 px-2 md:px-8 flex justify-between items-end border-b-2 md:border-b-4 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
         <div>
-          <div className="text-rose-500 text-[8px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 uppercase">Player 01 - Stage {stage}</div>
+          <div className="text-rose-500 text-[6px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 uppercase">Player 01 - Stage {stage}</div>
           <motion.div 
             key={score}
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
-            className="text-3xl md:text-7xl font-black text-lime-400 tracking-tighter leading-none"
+            className="text-xl md:text-7xl font-black text-lime-400 tracking-tighter leading-none"
           >
             {score.toLocaleString('en-US', { minimumIntegerDigits: 6 })}
           </motion.div>
@@ -711,7 +712,7 @@ const SnakeGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex p-1 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
+      <main className="flex-1 flex p-0.5 md:p-3 gap-0 md:gap-4 overflow-hidden relative min-h-0">
         {/* Left Sidebar: Stats (Desktop only) */}
         <aside className="w-64 hidden xl:flex flex-col gap-4">
           <div className="bg-slate-900 border-2 border-indigo-500 p-4 rounded-sm">
@@ -758,11 +759,11 @@ const SnakeGame: React.FC = () => {
         </aside>
 
         {/* Game Area */}
-        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-1 md:m-0 overflow-hidden">
-          <div className="relative p-0.5 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-2 md:border-4 border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-0.5 md:m-0 overflow-hidden">
+          <div className="relative p-0 md:p-2 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
             <canvas 
               ref={canvasRef} 
-              className="bg-black shadow-[0_0_50px_rgba(163,230,28,0.25)] border-2 md:border-8 border-indigo-950"
+              className="bg-black shadow-[0_0_50px_rgba(163,230,28,0.25)] border md:border-4 border-indigo-950"
             />
           </div>
 
@@ -776,7 +777,7 @@ const SnakeGame: React.FC = () => {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-md bg-slate-950/40"
               >
-                <div className="text-center p-4 md:p-8 bg-slate-900 border-4 border-indigo-500 rounded-xl shadow-[0_0_50px_rgba(79,70,229,0.4)] mx-4">
+                <div className="text-center p-4 md:p-8 bg-slate-900 border-2 border-indigo-500 rounded-xl shadow-[0_0_50px_rgba(79,70,229,0.4)] mx-4">
                   <h1 className="text-2xl md:text-6xl font-display font-black italic uppercase tracking-tighter mb-4 md:mb-8 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-cyan-400">
                     Snake Arcade
                   </h1>
@@ -805,7 +806,7 @@ const SnakeGame: React.FC = () => {
                 <motion.div 
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
-                  className="text-center p-6 md:p-12 border-4 md:border-8 border-rose-600 bg-slate-950 mx-4"
+                  className="text-center p-6 md:p-12 border-2 md:border-4 border-rose-600 bg-slate-950 mx-4"
                 >
                   <h2 className="text-4xl md:text-6xl font-display font-black text-rose-500 uppercase tracking-tighter mb-4 shadow-rose-900/50 drop-shadow-xl">
                     FATAL ERROR
@@ -895,23 +896,23 @@ const SnakeGame: React.FC = () => {
         </aside>
       </main>
 
-      <footer className="h-28 md:h-40 shrink-0 bg-slate-900 border-t-4 md:border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-4 md:gap-24">
-          <div className="grid grid-cols-3 gap-x-4 md:gap-x-16 gap-y-2 md:gap-y-6">
+      <footer className="h-[35vh] md:h-40 shrink-0 bg-slate-900 border-t-2 md:border-t-4 border-indigo-900 flex flex-col justify-center items-center z-10 px-2 md:px-8 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-24">
+          <div className="grid grid-cols-3 gap-x-6 md:gap-x-16 gap-y-3 md:gap-y-6 scale-110 md:scale-100">
             <div />
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('UP'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'UP' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronUp className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('UP'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'UP' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronUp className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
             <div />
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('LEFT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'LEFT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronLeft className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('DOWN'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'DOWN' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronDown className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('RIGHT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'RIGHT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronRight className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('LEFT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'LEFT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronLeft className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('DOWN'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'DOWN' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronDown className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('RIGHT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'RIGHT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronRight className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
           </div>
           
-          <div className="h-12 md:h-20 w-1 md:w-1.5 bg-indigo-900/50 rounded-full"></div>
+          <div className="hidden md:block h-20 w-1.5 bg-indigo-900/50 rounded-full"></div>
 
           <div className="flex items-center">
             <button 
               onClick={() => { setIsPaused(!isPaused); playSound('click'); }}
-              className={`group flex items-center gap-2 md:gap-4 px-4 md:px-10 py-3 md:py-4 rounded-xl font-black uppercase tracking-wider md:tracking-[0.2em] text-[10px] md:text-xs transition-all shadow-[0_4px_0_rgba(0,0,0,0.5)] md:shadow-[0_6px_0_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none ${
+              className={`group flex items-center gap-2 md:gap-4 px-6 md:px-10 py-3 md:py-4 rounded-xl font-black uppercase tracking-wider md:tracking-[0.2em] text-[10px] md:text-xs transition-all shadow-[0_4px_0_rgba(0,0,0,0.5)] md:shadow-[0_6px_0_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none ${
                 isPaused 
                   ? 'bg-lime-400 text-black hover:bg-lime-300' 
                   : 'bg-indigo-600 text-white hover:bg-indigo-500'
@@ -936,7 +937,7 @@ const SnakeGame: React.FC = () => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900 border-4 border-indigo-500 p-8 max-w-md w-full shadow-[0_0_50px_rgba(79,70,229,0.3)]"
+              className="bg-slate-900 border-2 border-indigo-500 p-8 max-w-md w-full shadow-[0_0_50px_rgba(79,70,229,0.3)]"
             >
               <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-8 border-b-2 border-indigo-500 pb-4">Configuration</h2>
               
