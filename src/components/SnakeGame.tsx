@@ -681,12 +681,12 @@ const SnakeGame: React.FC = () => {
       {/* Arcade Header */}
       <header className="w-full shrink-0 py-1 md:py-2 px-4 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
         <div>
-          <div className="text-rose-500 text-[9px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 md:mb-1 uppercase">Player 01 - Stage {stage}</div>
+          <div className="text-rose-500 text-[8px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 uppercase">Player 01 - Stage {stage}</div>
           <motion.div 
             key={score}
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
-            className="text-4xl md:text-7xl font-black text-lime-400 tracking-tighter leading-none"
+            className="text-3xl md:text-7xl font-black text-lime-400 tracking-tighter leading-none"
           >
             {score.toLocaleString('en-US', { minimumIntegerDigits: 6 })}
           </motion.div>
@@ -694,8 +694,8 @@ const SnakeGame: React.FC = () => {
         
         <div className="flex gap-4 md:gap-20 text-right">
           <div>
-            <div className="text-slate-400 text-[9px] md:text-[11px] font-black uppercase tracking-widest mb-0 md:mb-1">Hi-Score</div>
-            <div className="text-xl md:text-4xl font-black text-white leading-none">
+            <div className="text-slate-400 text-[8px] md:text-[11px] font-black uppercase tracking-widest mb-0">Hi-Score</div>
+            <div className="text-lg md:text-4xl font-black text-white leading-none">
               {highScore.toLocaleString('en-US', { minimumIntegerDigits: 6 })}
             </div>
           </div>
@@ -703,12 +703,12 @@ const SnakeGame: React.FC = () => {
             onClick={() => { setSettingsOpen(true); playSound('click'); }}
             className="p-1 md:p-2 bg-indigo-600 text-white rounded-sm self-center hover:bg-indigo-500 transition-colors"
           >
-            <Settings size={16} className="md:w-5 md:h-5" />
+            <Settings size={14} className="md:w-5 md:h-5" />
           </button>
         </div>
       </header>
 
-      <main className="flex-1 flex p-2 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
+      <main className="flex-1 flex p-1 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
         {/* Left Sidebar: Stats (Desktop only) */}
         <aside className="w-64 hidden xl:flex flex-col gap-4">
           <div className="bg-slate-900 border-2 border-indigo-500 p-4 rounded-sm">
@@ -892,18 +892,18 @@ const SnakeGame: React.FC = () => {
         </aside>
       </main>
 
-      <footer className="h-32 md:h-40 shrink-0 bg-slate-900 border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8">
-        <div className="flex items-center gap-6 md:gap-24">
-          <div className="grid grid-cols-3 gap-x-6 md:gap-x-16 gap-y-3 md:gap-y-6">
+      <footer className="h-28 md:h-40 shrink-0 bg-slate-900 border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8">
+        <div className="flex items-center gap-4 md:gap-24">
+          <div className="grid grid-cols-3 gap-x-4 md:gap-x-16 gap-y-2 md:gap-y-6">
             <div />
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('UP'); }} className={`w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'UP' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-1 active:shadow-none'}`}><ChevronUp className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('UP'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'UP' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronUp className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
             <div />
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('LEFT'); }} className={`w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'LEFT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-1 active:shadow-none'}`}><ChevronLeft className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('DOWN'); }} className={`w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'DOWN' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-1 active:shadow-none'}`}><ChevronDown className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
-            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('RIGHT'); }} className={`w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'RIGHT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-1 active:shadow-none'}`}><ChevronRight className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('LEFT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'LEFT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronLeft className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('DOWN'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'DOWN' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronDown className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
+            <button onPointerDown={(e) => { e.preventDefault(); changeDirection('RIGHT'); }} className={`w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border-4 rounded-xl transition-all ${visualDirection === 'RIGHT' ? 'bg-lime-400 border-lime-400 text-black shadow-[0_0_20px_rgba(163,230,28,0.7)]' : 'border-indigo-600 text-indigo-400 shadow-[2px_2px_0_rgba(49,46,129,1)] md:shadow-[4px_4px_0_rgba(49,46,129,1)] hover:bg-indigo-900 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none'}`}><ChevronRight className="w-4 h-4 md:w-6 md:h-6" strokeWidth={3} /></button>
           </div>
           
-          <div className="h-16 md:h-20 w-1 md:w-1.5 bg-indigo-900/50 rounded-full"></div>
+          <div className="h-12 md:h-20 w-1 md:w-1.5 bg-indigo-900/50 rounded-full"></div>
 
           <div className="flex items-center">
             <button 
