@@ -665,7 +665,10 @@ const SnakeGame: React.FC = () => {
       if (containerRef.current && canvasRef.current) {
         const boardContainer = canvasRef.current.parentElement;
         if (boardContainer) {
-          const size = Math.max(100, Math.min(boardContainer.clientWidth - 8, boardContainer.clientHeight - 8, 1000));
+          // Increase margins slightly more for mobile (clientHeight/Width - 32 instead of - 8) to prevent crowding
+          const isMobile = window.innerWidth < 768;
+          const margin = isMobile ? 32 : 16;
+          const size = Math.max(100, Math.min(boardContainer.clientWidth - margin, boardContainer.clientHeight - margin, 1000));
           canvasRef.current.width = size;
           canvasRef.current.height = size;
         }
@@ -708,7 +711,7 @@ const SnakeGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex p-1 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
+      <main className="flex-1 flex p-2 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
         {/* Left Sidebar: Stats (Desktop only) */}
         <aside className="w-64 hidden xl:flex flex-col gap-4">
           <div className="bg-slate-900 border-2 border-indigo-500 p-4 rounded-sm">
@@ -755,7 +758,7 @@ const SnakeGame: React.FC = () => {
         </aside>
 
         {/* Game Area */}
-        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse">
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-1 md:m-0">
           <div className="relative p-2 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
             <canvas 
               ref={canvasRef} 
@@ -774,7 +777,7 @@ const SnakeGame: React.FC = () => {
                 className="absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-md bg-slate-950/40"
               >
                 <div className="text-center p-4 md:p-8 bg-slate-900 border-4 border-indigo-500 rounded-xl shadow-[0_0_50px_rgba(79,70,229,0.4)] mx-4">
-                  <h1 className="text-3xl md:text-6xl font-display font-black italic uppercase tracking-tighter mb-4 md:mb-8 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-cyan-400">
+                  <h1 className="text-2xl md:text-6xl font-display font-black italic uppercase tracking-tighter mb-4 md:mb-8 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-cyan-400">
                     Snake Arcade
                   </h1>
                   <button 
@@ -892,7 +895,7 @@ const SnakeGame: React.FC = () => {
         </aside>
       </main>
 
-      <footer className="h-28 md:h-40 shrink-0 bg-slate-900 border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8">
+      <footer className="h-28 md:h-40 shrink-0 bg-slate-900 border-t-4 md:border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4 md:gap-24">
           <div className="grid grid-cols-3 gap-x-4 md:gap-x-16 gap-y-2 md:gap-y-6">
             <div />
