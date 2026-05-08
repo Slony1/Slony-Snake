@@ -665,11 +665,12 @@ const SnakeGame: React.FC = () => {
       if (containerRef.current && canvasRef.current) {
         const boardContainer = canvasRef.current.parentElement;
         if (boardContainer) {
-          // Increase margins more aggressively for mobile to ensure footer visibility
+          // Use a percentage of the actual container height for margin calculation
+          const containerHeight = boardContainer.clientHeight;
           const isMobile = window.innerWidth < 768;
           const margX = isMobile ? 32 : 48;
-          const margY = isMobile ? window.innerHeight * 0.4 : 80; 
-          const size = Math.max(80, Math.min(boardContainer.clientWidth - margX, boardContainer.clientHeight - margY, isMobile ? 220 : 900));
+          const margY = isMobile ? containerHeight * 0.15 : 80; 
+          const size = Math.max(100, Math.min(boardContainer.clientWidth - margX, containerHeight - margY, isMobile ? 280 : 900));
           canvasRef.current.width = size;
           canvasRef.current.height = size;
         }
@@ -681,7 +682,7 @@ const SnakeGame: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen h-[100svh] h-[100dvh] bg-black text-lime-400 font-mono crt-line overflow-hidden" ref={containerRef}>
+    <div className="fixed inset-0 bg-black text-lime-400 font-mono crt-line overflow-hidden flex flex-col" ref={containerRef}>
       {/* Arcade Header */}
       <header className="w-full shrink-0 py-0.5 md:py-2 px-2 md:px-8 flex justify-between items-end border-b-2 md:border-b-4 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
         <div>
@@ -896,7 +897,7 @@ const SnakeGame: React.FC = () => {
         </aside>
       </main>
 
-      <footer className="h-[35vh] md:h-40 shrink-0 bg-slate-900 border-t-2 md:border-t-4 border-indigo-900 flex flex-col justify-center items-center z-10 px-2 md:px-8 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+      <footer className="shrink-0 bg-slate-900 border-t-2 md:border-t-4 border-indigo-900 flex flex-col justify-center items-center z-10 px-2 md:px-8 py-4 md:h-40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-24">
           <div className="grid grid-cols-3 gap-x-6 md:gap-x-16 gap-y-3 md:gap-y-6 scale-110 md:scale-100">
             <div />
