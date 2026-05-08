@@ -667,8 +667,8 @@ const SnakeGame: React.FC = () => {
         if (boardContainer) {
           // Increase margins more aggressively for mobile to ensure footer visibility
           const isMobile = window.innerWidth < 768;
-          const margin = isMobile ? 48 : 24; 
-          const size = Math.max(100, Math.min(boardContainer.clientWidth - margin, boardContainer.clientHeight - margin, 1000));
+          const margin = isMobile ? 100 : 48; 
+          const size = Math.max(100, Math.min(boardContainer.clientWidth - margin, boardContainer.clientHeight - margin, 900));
           canvasRef.current.width = size;
           canvasRef.current.height = size;
         }
@@ -682,7 +682,7 @@ const SnakeGame: React.FC = () => {
   return (
     <div className="flex flex-col h-screen h-[100svh] h-[100dvh] bg-black text-lime-400 font-mono crt-line overflow-hidden" ref={containerRef}>
       {/* Arcade Header */}
-      <header className="w-full shrink-0 py-1 md:py-2 px-4 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+      <header className="w-full shrink-0 py-1 md:py-2 px-2 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
         <div>
           <div className="text-rose-500 text-[8px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 uppercase">Player 01 - Stage {stage}</div>
           <motion.div 
@@ -711,7 +711,7 @@ const SnakeGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex p-2 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
+      <main className="flex-1 flex p-1 md:p-3 gap-0 md:gap-4 overflow-hidden relative">
         {/* Left Sidebar: Stats (Desktop only) */}
         <aside className="w-64 hidden xl:flex flex-col gap-4">
           <div className="bg-slate-900 border-2 border-indigo-500 p-4 rounded-sm">
@@ -759,7 +759,7 @@ const SnakeGame: React.FC = () => {
 
         {/* Game Area */}
         <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-950 border-4 md:border-[12px] border-indigo-500 rounded-lg md:rounded-[2.5rem] shadow-[0_0_40px_rgba(79,70,229,0.3),inset_0_0_60px_black] md:animate-pulse m-1 md:m-0 overflow-hidden">
-          <div className="relative p-1 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
+          <div className="relative p-0.5 md:p-6 bg-slate-900 rounded-md md:rounded-2xl shadow-2xl w-full h-full flex items-center justify-center overflow-hidden">
             <canvas 
               ref={canvasRef} 
               className="bg-black shadow-[0_0_50px_rgba(163,230,28,0.25)] border-2 md:border-8 border-indigo-950"
