@@ -132,6 +132,10 @@ const SnakeGame: React.FC = () => {
   const [speed, setSpeed] = useState(INITIAL_SPEED);
   const [stage, setStage] = useState(1);
   const [seedsEaten, setSeedsEaten] = useState(0);
+  
+  // Timing Refs for snappy input
+  const lastMoveRef = useRef<number>(Date.now());
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Settings State
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -225,7 +229,13 @@ const SnakeGame: React.FC = () => {
     return { x: 1, y: 1 }; // Fallback
   }, [obstacles]);
 
-  const resetGame = () => {
+  const handleGameOver = useCallback(() => {
+    setIsGameOver(true);
+    setScreenShake(20);
+    playSound('die');
+  }, []);
+
+  const resetGame = useCallback(() => {
     setSnake([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]);
     setDirection('UP');
     directionQueue.current = [];
@@ -239,7 +249,7 @@ const SnakeGame: React.FC = () => {
     setParticles([]);
     setGameStarted(true);
     playSound('click');
-  };
+  }, [baseSpeedSetting, generateFood]);
 
   // --- Game Loop Management ---
   const snakeRef = useRef(snake);
@@ -256,92 +266,95 @@ const SnakeGame: React.FC = () => {
   useEffect(() => { seedsEatenRef.current = seedsEaten; }, [seedsEaten]);
   useEffect(() => { scoreRef.current = score; }, [score]);
 
+  // --- Game Mechanics ---
+  const moveSnake = useCallback(() => {
+    // Pull next direction from queue
+    let nextDir = directionRef.current;
+    if (directionQueue.current.length > 0) {
+      nextDir = directionQueue.current.shift()!;
+    }
+    
+    const currentSnake = snakeRef.current;
+    const currentFood = foodRef.current;
+    
+    setDirection(nextDir);
+    setVisualDirection(nextDir); // Sync visual direction on move
+    const head = currentSnake[0];
+    const newHead = { ...head };
+
+    switch (nextDir) {
+      case 'UP': newHead.y -= 1; break;
+      case 'DOWN': newHead.y += 1; break;
+      case 'LEFT': newHead.x -= 1; break;
+      case 'RIGHT': newHead.x += 1; break;
+    }
+
+    // Dimensional Wrapping
+    if (newHead.x < 0) newHead.x = GRID_SIZE - 1;
+    if (newHead.x >= GRID_SIZE) newHead.x = 0;
+    if (newHead.y < 0) newHead.y = GRID_SIZE - 1;
+    if (newHead.y >= GRID_SIZE) newHead.y = 0;
+
+    // Obstacle Collision
+    if (obstacles.some(p => p.x === newHead.x && p.y === newHead.y)) {
+      handleGameOver();
+      return;
+    }
+
+    // Self Collision
+    if (currentSnake.some(p => p.x === newHead.x && p.y === newHead.y)) {
+      handleGameOver();
+      return;
+    }
+
+    const newSnake = [newHead, ...currentSnake];
+
+    // Food Consumption
+    if (newHead.x === currentFood.x && newHead.y === currentFood.y) {
+      const nextSeedsCount = seedsEatenRef.current + 1;
+      setSeedsEaten(nextSeedsCount);
+
+      if (stageRef.current === 1 && nextSeedsCount >= 3) {
+        setStage(2);
+        playSound('stageUp');
+      }
+
+      setScore(prev => {
+        const newScore = prev + 10;
+        if (newScore > highScore) {
+          setHighScore(newScore);
+          safeStorage.setItem('snake-high-score', newScore.toString());
+        }
+        return newScore;
+      });
+      setFood(generateFood(newSnake));
+      setSpeed(prev => Math.max(MIN_SPEED, prev - SPEED_INCREMENT));
+      createParticles(currentFood.x, currentFood.y, '#f43f5e');
+      setScreenShake(8);
+      setSegmentSwirl(prev => [...prev, { index: 0, time: Date.now() }]);
+      playSound('eat');
+    } else {
+      newSnake.pop();
+    }
+
+    setSnake(newSnake);
+    lastMoveRef.current = Date.now();
+  }, [obstacles, generateFood, highScore, handleGameOver]);
+
   // --- Game Loop ---
   useEffect(() => {
     if (!gameStarted || isGameOver || isPaused) return;
 
-    const moveSnake = () => {
-      // Pull next direction from queue
-      let nextDir = directionRef.current;
-      if (directionQueue.current.length > 0) {
-        nextDir = directionQueue.current.shift()!;
-      }
-      
-      const currentSnake = snakeRef.current;
-      const currentFood = foodRef.current;
-      
-      setDirection(nextDir);
-      setVisualDirection(nextDir); // Sync visual direction on move
-      const head = currentSnake[0];
-      const newHead = { ...head };
-
-      switch (nextDir) {
-        case 'UP': newHead.y -= 1; break;
-        case 'DOWN': newHead.y += 1; break;
-        case 'LEFT': newHead.x -= 1; break;
-        case 'RIGHT': newHead.x += 1; break;
-      }
-
-      // Dimensional Wrapping
-      if (newHead.x < 0) newHead.x = GRID_SIZE - 1;
-      if (newHead.x >= GRID_SIZE) newHead.x = 0;
-      if (newHead.y < 0) newHead.y = GRID_SIZE - 1;
-      if (newHead.y >= GRID_SIZE) newHead.y = 0;
-
-      // Obstacle Collision
-      if (obstacles.some(p => p.x === newHead.x && p.y === newHead.y)) {
-        handleGameOver();
-        return;
-      }
-
-      // Self Collision
-      if (currentSnake.some(p => p.x === newHead.x && p.y === newHead.y)) {
-        handleGameOver();
-        return;
-      }
-
-      const newSnake = [newHead, ...currentSnake];
-
-      // Food Consumption
-      if (newHead.x === currentFood.x && newHead.y === currentFood.y) {
-        const nextSeedsCount = seedsEatenRef.current + 1;
-        setSeedsEaten(nextSeedsCount);
-
-        if (stageRef.current === 1 && nextSeedsCount >= 3) {
-          setStage(2);
-          playSound('stageUp');
-        }
-
-        setScore(prev => {
-          const newScore = prev + 10;
-          if (newScore > highScore) {
-            setHighScore(newScore);
-            safeStorage.setItem('snake-high-score', newScore.toString());
-          }
-          return newScore;
-        });
-        setFood(generateFood(newSnake));
-        setSpeed(prev => Math.max(MIN_SPEED, prev - SPEED_INCREMENT));
-        createParticles(currentFood.x, currentFood.y, '#f43f5e');
-        setScreenShake(8);
-        setSegmentSwirl(prev => [...prev, { index: 0, time: Date.now() }]);
-        playSound('eat');
-      } else {
-        newSnake.pop();
-      }
-
-      setSnake(newSnake);
+    const runLoop = () => {
+      moveSnake();
+      timerRef.current = setTimeout(runLoop, speedRef.current);
     };
 
-    const interval = setInterval(moveSnake, speed);
-    return () => clearInterval(interval);
-  }, [gameStarted, isGameOver, isPaused, speed, obstacles, generateFood, highScore]);
-
-  const handleGameOver = () => {
-    setIsGameOver(true);
-    setScreenShake(20);
-    playSound('die');
-  };
+    timerRef.current = setTimeout(runLoop, speed);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [gameStarted, isGameOver, isPaused, speed, moveSnake]);
 
   // Store direction in a ref to provide the most current value to event listeners without re-attaching them
   const directionRef = useRef<Direction>(direction);
@@ -383,14 +396,17 @@ const SnakeGame: React.FC = () => {
           clearTimeout(timerRef.current);
           // Trigger after a tiny buffer to allow visual update to settle
           timerRef.current = setTimeout(() => {
-              // The interval-based logic continues from moveSnake inside the timeout
-              // We need a reference to the move function or just wait for the next natural tick
-              // but for now, the "Instant visual" + slightly faster feel is robust.
-          }, 0); 
+              // Trigger the next move immediately because we clear and restart
+              const runNext = () => {
+                  moveSnake();
+                  timerRef.current = setTimeout(runNext, speedRef.current);
+              };
+              runNext();
+          }, 10); 
         }
       }
     }
-  }, [isGameOver, isPaused]);
+  }, [isGameOver, isPaused, moveSnake]);
 
   // --- Input Handling ---
   useEffect(() => {
@@ -661,9 +677,9 @@ const SnakeGame: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-black text-lime-400 font-mono crt-line" ref={containerRef}>
+    <div className="flex flex-col h-screen h-[100svh] h-[100dvh] bg-black text-lime-400 font-mono crt-line overflow-hidden" ref={containerRef}>
       {/* Arcade Header */}
-      <header className="w-full py-1 md:py-2 px-4 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+      <header className="w-full shrink-0 py-1 md:py-2 px-4 md:px-8 flex justify-between items-end border-b-4 md:border-b-8 border-indigo-900 bg-slate-900 z-10 shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
         <div>
           <div className="text-rose-500 text-[9px] md:text-[11px] font-black tracking-[0.2em] md:tracking-[0.4em] mb-0 md:mb-1 uppercase">Player 01 - Stage {stage}</div>
           <motion.div 
@@ -876,7 +892,7 @@ const SnakeGame: React.FC = () => {
         </aside>
       </main>
 
-      <footer className="h-32 md:h-40 bg-slate-900 border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8">
+      <footer className="h-32 md:h-40 shrink-0 bg-slate-900 border-t-8 border-indigo-900 flex justify-center items-center z-10 px-4 md:px-8">
         <div className="flex items-center gap-6 md:gap-24">
           <div className="grid grid-cols-3 gap-x-6 md:gap-x-16 gap-y-3 md:gap-y-6">
             <div />
